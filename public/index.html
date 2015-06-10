@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<title>Testing GRUNT live reload</title>
+	<script type="text/javascript" src="bower_components/react/react.js"></script>
+	<script type="text/javascript" src="bower_components/react/JSXTransformer.js"></script>
+	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css">
+	<script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+	<script type="text/javascript" src='bower_components/bootstrap/dist/js/bootstrap.js'></script>
+
+	
+
+	<script type="text/jsx" src="/js/reactApp.js"></script>
+	<link rel="stylesheet" type="text/css" href="/css/one.css">
+</head>
+<body>
+	<div id="container" class="container">
+
+	</div>
+
+    <script type="text/jsx">
+    	var FilterableEpisodeTable = React.createClass({
+    		getInitialState: function(){
+    			return {
+    				filterText: ''
+    			};
+    		},
+
+    		handleFilterInput: function(filterText){
+    			this.setState({
+    				filterText: filterText
+    			});
+    		},
+
+    		render: function(){
+    			return(
+	    			<div className="spacer">
+		    			<SearchBar filterText={this.state.filterText} onFilterInput={this.handleFilterInput} />
+		    			<EpisodeTable filterText={this.state.filterText} episodes={this.props.episodes} />
+	    			</div>
+    			);
+    		}
+    	});
+
+    	// there is we create row whith some property
+    	// it's class of React objet, it will be named EpisodeRow. It's a row from single Episode..
+
+    	// in title of episode we write attribute "title" from object "episode", from array "episodes"
+    	// each episode has unique title 
+    	var EpisodeRow = React.createClass({
+    		render: function(){
+    			return (
+    				<tr>    					
+						<td>{this.props.episode.title}</td>
+						<td>
+							<a href="#">View</a>
+						</td>
+					</tr>
+    			);
+    		}
+    	});
+
+    	var EpisodeTable = React.createClass({
+    		render: function(){
+    			var props = this.props;
+    			// Episodes will have mapped when render happen.
+    			// We taking [props] from EpisodeTable
+    			var rows = this.props.episodes
+    			.filter(function(episode){
+    				return episode.title.toLowerCase().indexOf(props.filterText.toLowerCase()) > -1;
+    			})
+    			.map(function(episode){
+    				return <EpisodeRow key={episode.title} episode={episode} />
+    			});
+    			// ----------------------------------------------
+    			// In <tbody>{rows}</tbody> instead "rows"  we can put array of JSX or React.js tags
+    			// -----------------------------------------------
+    			return (
+    				<div className="row spacer">
+						<table width="100%">
+							<thead>
+								<tr>
+									<th>Title</th>
+									<th>Link</th>
+								</tr>
+							</thead>
+							<tbody>
+								{rows}
+							</tbody>
+						</table>
+					</div>
+    			);
+    		}
+    	});
+
+    	var SearchBar = React.createClass({
+    		// When input will have changed. It's will be calling "onChange" methon and "onChange" method will be calling "this.hanleChange"
+    		// In turn "this.props.onFilterInput" will be calling "handleFilterInput" on parent and turn new value from "input".
+    		handleChange: function(){
+    			this.props.onFilterInput(
+    				this.refs.aim.getDOMNode().value
+    			);
+    		},
+    		render: function(){
+    			return(
+    				<div className="row">
+						<div className="form-group">
+							<input ref="aim" onChange={this.handleChange} type="search" className="form-control" placeholder="Search for Episode" />
+						</div>
+						<div className="col-lg-4 col-lg-offset-4">
+							<span>Search for: </span><span>{this.props.filterText}</span>
+						</div>
+					</div>
+    			);
+    		}
+    	});
+
+    	// list of episodes
+    	var episodes = [{
+    		title: "Angular vs Yeoman",
+    		link: "bla-bla",
+    		date: new Date(2013,11,4),
+    	}, {
+    		title: "Angular",
+    		link: "bla-bla",
+    		date: new Date(2013,11,4),
+    	}, {
+    		title: "Yeoman",
+    		link: "bla-bla",
+    		date: new Date(2013,11,4),
+    	}, {
+    		title: "Bower",
+    		link: "bla-bla",
+    		date: new Date(2013,11,4),
+    	}, {
+    		title: "Gulp",
+    		link: "bla-bla",
+    		date: new Date(2013,11,4),
+    	}, {
+    		title: "Grunt",
+    		link: "bla-bla",
+    		date: new Date(2013,11,4),
+    	}, {
+    		title: "Backbone",
+    		link: "bla-bla",
+    		date: new Date(2013,11,4),
+    	}];
+
+    	// rendering EpisodeTable with EpisodeRows
+    	React.render(<FilterableEpisodeTable episodes={episodes} />, document.getElementById('container'));
+    </script>
+  </body>
+</html>

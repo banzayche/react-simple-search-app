@@ -1,2 +1,3 @@
-# react-try
-react-try
+#React simple-search-app
+npm install
+bower install
